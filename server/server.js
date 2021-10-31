@@ -1,11 +1,32 @@
-const express = require('express'); //Line 1
-const app = express(); //Line 2
-const port = process.env.PORT || 3001; //Line 3
+const express = require('express')
+const cors = require('cors')
+const path = require('path')
+const app = express()
+const db = require('./config/connection')
+const routes = require('./routes')
+const port = process.env.PORT || 3001; 
 
-// This displays message that the server running and listening to specified port
-app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 
-// create a GET route
-app.get('/express_backend', (req, res) => { //Line 9
-  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' }); //Line 10
-}); //Line 11
+
+app.use(
+    cors({
+    origin: '*',
+    credentials: true
+    })
+)
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
+
+app.use(routes)
+/*
+app.get('/', (req, res) => {
+  //res.status(200).send('Hello World!');
+  res.json({name: "kyle", favoriteFood: "rice"})
+})
+*/
+
+db.once('open', () => {
+    app.listen(port, () => {
+        console.log(`app listening at http://localhost:${port}`);
+    })
+})
