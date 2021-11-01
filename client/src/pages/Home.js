@@ -1,8 +1,8 @@
-import SignInForm from '../components/signInForm';
+import SignUpForm from '../components/signup';
 
 const Home = () => {
     return(
-        <SignInForm />
+        <SignUpForm />
     )
 }
 
