@@ -6,6 +6,22 @@ router.get('/', async (req, res) => {
     res.send(user);
 })
 
+router.get('/news', async (req, res) => {
+    User.findOne({ email: 'test@test.com' }, function(err, user){
+       if(err) throw err;
+       
+       user.comparePassword('test123', function(err, isMatch){
+           if (err) throw err;
+           console.log('test123:', isMatch);
+       })
+       user.comparePassword('123test', function(err, isMatch) {
+        if (err) throw err;
+        console.log('123test:', isMatch); // -> 123Password: false
+        });
+    });
+    
+})
+
 router.post('/', async (req, res) => {
     
     //Check if the user exists already

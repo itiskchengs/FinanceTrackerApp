@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import Form from '../form/index';
 import axios from 'axios';
 
@@ -26,14 +26,12 @@ const SignUpForm = () => {
         setAllSignUp(updatedForms);
         //Runs the fetch function and uses the information from the varibale updated forms.
         sendData(updatedForms)
-        //Replaces the input fields back to empty fields. 
         setSignUp({email: '', password: ''});
     }
 
     //Function that POST fetch data to the mongoDB server.
     const sendData = (updatedForms) => {
         axios.post('/api/users', {
-            //Sends the email and password vale from the updatedForms variable in the handleSubmit function.
             email: updatedForms[0].email,
             password: updatedForms[0].password
         }).then((response) => {

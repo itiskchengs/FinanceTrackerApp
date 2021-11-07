@@ -18,12 +18,6 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
 app.use(routes)
-/*
-app.get('/', (req, res) => {
-  //res.status(200).send('Hello World!');
-  res.json({name: "kyle", favoriteFood: "rice"})
-})
-*/
 
 db.once('open', () => {
     app.listen(port, () => {
