@@ -4,7 +4,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/financetracker'
     
         maxPoolSize:50,
         wtimeoutMS:2500,
-        useNewUrlParser:true
+        useNewUrlParser:true,
+        useUnifiedTopology: true
     
 });
 

@@ -31,7 +31,7 @@ const SignUpForm = () => {
 
     //Function that POST fetch data to the mongoDB server.
     const sendData = (updatedForms) => {
-        axios.post('/api/users', {
+        axios.post('/api/users/signup', {
             email: updatedForms[0].email,
             password: updatedForms[0].password
         }).then((response) => {
