@@ -5,7 +5,7 @@ const saltRounds = 10;
 const userSchema = new Schema({
     email: { type: String, required: true, index: {unique: true }},
     password: { type: String, required: true }
-})
+},{timestamps: true})
 
 userSchema.pre('save', function(next){ 
     let user = this
