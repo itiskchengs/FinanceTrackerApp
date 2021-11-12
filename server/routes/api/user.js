@@ -11,18 +11,17 @@ router.post('/signin', async (req, res) => {
                 message: 'Invalid'
             })
         }
-
+    
+        //Mongo preSchema function that uses Bcrypt to compare the password in the database and password submitted. 
         user.comparePassword(req.body.password, function(err, isMatch) {
             if(isMatch) {
                 const payload = {
                     email: req.body.email,
                 }
-                jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m' },
+                //Once the password is matched. Create a JWT Authentication token and assign the token to the users header.
+                jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30m' },
                     (err, token) => {
                         if(err) return res.json({message: err.message})
-                       // res.header({
-                        //    "x-access-token": 'Bearer' + token,
-                        //})
                         return res.json({
                             message: 'Success', 
                             token: token,
@@ -37,46 +36,22 @@ router.post('/signin', async (req, res) => {
     })
 })
 
-/*
-function verifyJWT(req, res, next) {
-    const token = req.headers["x-access-token"]?.split(' ')[1]
-    console.log(token);
-    
-    if(token) {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-            if (err) return res.json({ 
-                isLoggedIn: false,
-                message: "Failed To Authenticate"
-            })
-            req.email = {};
-            req.body.email = decoded.email
-            next()
-        })
-    } else {
-        res.json( {message: "Incorrect Token Give", isLoggedIn: false})
-    }
-}*/
-
+//Function to verify the JWT web token that the token is grabbed from the header. 
 function verifyingJWT(req, res, next){
     const token = req.headers['x-access-token'];
     console.log(token);
-
+    
     if(token){
-        //res.json({isLoggedIn: true})
+        //If there is a token then run the JWT verify function if the function matches then send back the object of decoded information that you want to send back to the front end.
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err,decoded){
             if(err) return res.json({
                 isLoggedIn: false,
                 message: 'Failed To Authenticate'
             })
-            //res.json({isLoggedIn: true})
             req.user = {};
             req.user.email = decoded.email
-            //req.user.experation = decoded.
             console.log(decoded);
             console.log(req.user.email);
-            var decoded = jwt.decode(token, {complete: true});
-            console.log(decoded.header);
-            console.log(decoded.payload);
             next()
 
         })
@@ -85,8 +60,7 @@ function verifyingJWT(req, res, next){
     }
 }
 
-
-
+//This endpoint gets called when the user logs in it runs the verify JWT function to make sure the JWT matches and is correct. 
 router.get('/getUsername', verifyingJWT, (req, res) => {
     return res.status(200).json({isLoggedIn: true, email: req.body.email})
 })
