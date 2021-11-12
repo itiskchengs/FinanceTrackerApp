@@ -1,31 +1,28 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 import Form from '../form';
 import axios from 'axios';
 
 const SignInForm = () => {
-    const navigate = useNavigate();
 
+    //State that holds the signInInfo data
     const [signinInfo, setSignIn] = useState({
         email: "",
         password: ""
     })
 
-    const [allSignInInfo, setAllSignIn] = useState([])
-
+    //Function that fires the setSignIn function that finds the key if its there and updates the values.
     const handleInput = (info, value) => {
         setSignIn({...signinInfo, [info]: value})
     }
 
+    //Function that runs when the button is submitted and runs the sendData fetch function with the signInInfo state object data sent through it.
     const handleSubmit = (event) => {
         event.preventDefault();
-        const updatedForms = [...allSignInInfo, signinInfo];
-        setAllSignIn(updatedForms);
-        console.log(updatedForms);
         sendData(signinInfo);
         setSignIn({email: "", password: ""});
     }
 
+    //Fetch call to verify to check if the username and password match. If it matches then run jwtCheck function
     const sendData = (loginInformation) => {
         axios({
             method: 'post',
@@ -38,20 +35,19 @@ const SignInForm = () => {
                 password: loginInformation.password
             }
         }).then((response) => {
-            console.log(response);
             if(response.data.message === 'Invalid'){
                 alert('Invalid Username or Password');
             } else {
                 localStorage.setItem("token", response.data.token)
-                console.log('Logged In',response);
+                jwtCheck();
             }
         }).catch((error) => {
-            console.log(error);
+            console.log(error)
         })
     }
 
-    useEffect(() => {
-        
+    //Fetch call to verify that the token is the same if it is redirects to dashboard.
+    const jwtCheck = () => {
         axios({
             method: 'get',
             url: '/api/users/getUsername',
@@ -61,15 +57,15 @@ const SignInForm = () => {
             }
         }).then((response) => { 
             console.log(response)
-            //response.data.isLoggedIn ? navigate('/', { state: {from: { pathname: "/profile"}}}) : null
             if(response.data.isLoggedIn === true) {
-                //navigate('/profile');
-                window.location.assign('/profile');
+                window.location.assign('/dashboard')
             } else {
-                console.log('Broken')
+                console.log('Token verification did not pass')
             }
+        }).catch((error) => {
+            console.log(error)
         })
-    }, [])
+    }
 
 
     return(
